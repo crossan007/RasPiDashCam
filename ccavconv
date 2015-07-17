@@ -1,0 +1,8 @@
+#! /bin/sh
+DATE=$(date +"%Y%m%d%H%M")
+/usr/bin/avconv -f video4linux2 -r 15 -input_format yuyv422 -video_size 640x480 -i /dev/video0 \
+-flags:v +global_header -vf "setpts=0.1*PTS,drawtext=fontfile=/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf:text='localtime\:%a %b %d %Y %T':fontcolor=white@0.8:x=7:y=460" \
+-c:v libx264 -preset ultrafast -tune film -map 0 \
+-f flv -f segment -segment_time 90 -r 150 \
+"/var/cache/avconv/$DATE-%03d.flv"
+
