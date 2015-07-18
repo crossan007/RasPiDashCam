@@ -1,4 +1,14 @@
 #!/usr/bin/python
+
+# references: 
+# https://github.com/Zulko/moviepy/blob/master/moviepy/video/io/ffmpeg_reader.py
+# https://github.com/Zulko/moviepy/blob/master/moviepy/video/io/ffmpeg_writer.py
+# https://libav.org/avconv.html#Pixel-Format
+# http://stackoverflow.com/questions/18962785/oserror-errno-2-no-such-file-or-directory-while-using-python-subprocess-in-dj
+# http://learnpythonthehardway.org/book/ex5.html
+# http://stackoverflow.com/questions/14759637/python-pil-bytes-to-image
+# http://zulko.github.io/blog/2013/09/27/read-and-write-video-frames-in-python-using-ffmpeg/
+
 import subprocess as sp
 import numpy
 import os 
