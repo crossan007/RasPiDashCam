@@ -17,7 +17,7 @@ import logging
 
 
 logging.basicConfig(level=logging.INFO)
-#av.logging.set_level(logging.INFO)
+av.logging.set_level(logging.INFO)
 
 date = " "
 temp = " "
@@ -57,16 +57,19 @@ def writeFrames():
     stream.height = 480
     print "stream is a: %s" % type(stream)
     while not exitFlag:
-        temp=av.VideoFrame.from_image(q.get())
+        temp=q.get()
+        temp.save('test/%04d.jpg' % frameCount)
+        frame=av.VideoFrame.from_image(temp)
+        print "%d" % frame.index
         #temp=temp.reformat(format="yuv420p")
         #print "Frame: %s" % temp
-        packet = stream.encode(temp)
+        packet = stream.encode(frame)
         #print "packet: %s" % packet
         if (type(packet) == "av.packet.Packet"):
             print "Found a packet, Muxing."
             output.mux(packet) 
-       # else:
-            #print "Not a packet. Not counting"
+        else:
+            print "Not a packet. Not counting"
         frameCount +=1
         
     packet = stream.encode() 
