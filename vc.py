@@ -101,7 +101,7 @@ def putFrames():
         print( "Starting push frame %d" %i)
         try:
             #outputPipeline.stdin.write(img)
-            f.write(img)
+            file.write(img)
         #except IOError as err:
             #ffmpeg_error = outputPipeline.stderr.read()
             #print(ffmpeg_error)
@@ -113,7 +113,7 @@ def putFrames():
         if i % 10 == 0:
             print( "Done with frame %d" %i)
         i+=1
-    f.close()
+    file.close()
     
     
 try:
