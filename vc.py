@@ -147,7 +147,7 @@ thread3 = threading.Thread(target=updateVars)
 thread3.daemon = True
 thread3.start()
 
-while exitFlag=0:
+while not exitFlag:
     time.sleep(10)
     print("vc.py still alive ")
     print("queue size: %d" % q.qsize())
