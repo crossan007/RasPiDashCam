@@ -94,27 +94,25 @@ def getFrames():
 def putFrames():
     global exitFlag
     i=0
-    #command2 = "/usr/bin/avconv -f rawvideo -pix_fmt rgb24 -video_size 640x480 -r 15 -i pipe: -vf \"setpts=0.1*PTS\" -c:v libx264 -preset ultrafast -tune film -map 0 -f flv -f segment -segment_time 90 -r 90 \"vid-"+date+"-%03d.flv\""
-    #outputPipeline = sp.Popen(shlex.split(command2), stdout = DEVNULL, stderr = DEVNULL, stdin = sp.PIPE )
-    file=gzip.open("vid-"+date+".gz", "wb",compresslevel=1)
+    # for H264: command2 = "/usr/bin/avconv -f rawvideo -pix_fmt rgb24 -video_size 640x480 -r 15 -i pipe: -vf \"setpts=0.1*PTS\" -c:v libx264 -preset ultrafast -tune film -map 0 -f flv -f segment -segment_time 90 -r 90 \"vid-"+date+"-%03d.flv\""
+	command2 = "/usr/bin/avconv -f rawvideo -pix_fmt rgb24 -video_size 640x480 -r 15 -i pipe: -vf \"setpts=0.1*PTS\" -c:v mpeg2video -map 0 -f flv -f segment -segment_time 90 -r 90 \"vid-"+date+"-%03d.flv\""
+    outputPipeline = sp.Popen(shlex.split(command2), stdout = DEVNULL, stderr = DEVNULL, stdin = sp.PIPE )
     while not exitFlag:
         img=q.get()
         if i % 10 == 0:
             print( "Starting push frame %d" %i)
 			
         try:
-            #outputPipeline.stdin.write(img)
-            file.write(img)
-        #except IOError as err:
-            #ffmpeg_error = outputPipeline.stderr.read()
-            #print(ffmpeg_error)
+            outputPipeline.stdin.write(img)
+        except IOError as err:
+            ffmpeg_error = outputPipeline.stderr.read()
+            print(ffmpeg_error)
         except: # catch *all* exceptions
             e = sys.exc_info()[0]
             print("Error: %s" % e )
-            #ffmpeg_error = outputPipeline.stdout.read()
-            #print(ffmpeg_error)
+            ffmpeg_error = outputPipeline.stdout.read()
+            print(ffmpeg_error)
         i+=1
-    file.close()
     
     
 try:
