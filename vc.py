@@ -55,7 +55,7 @@ def getFrames():
     w = 640
     h = 480
     nbytes = 3*w*h
-	tempimg = ""
+    tempimg = ""
     font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",14)
     command = "/usr/bin/avconv -f video4linux2 -r 15 -input_format yuyv422 -video_size 640x480 -i /dev/video0 -f rawvideo -pix_fmt rgb24 pipe: "
     inputPipeline = sp.Popen(shlex.split(command), stdout = sp.PIPE,stderr=DEVNULL)
@@ -75,7 +75,7 @@ def getFrames():
         if i % 100 == 0:
             print("Manipulating frame %d" %i)
 		buf=0
-		tempimg = ""
+        tempimg = ""
 		while buf<10:
 			img = Image.frombuffer('RGB', (640,480), raw_image, 'raw', 'RGB', 0, 1)
 			draw=ImageDraw.Draw(img)
@@ -83,14 +83,14 @@ def getFrames():
 			draw.text((160, 460), date ,(255,255,0),font=font)
 			draw.text((580, 460), str(i) ,(255,255,0),font=font)
 			draw = ImageDraw.Draw(img)
-			tempimg +=img.tostring()
+            tempimg+=img.tostring()
 			del img
 			del draw
 			del raw_image
 			gc.collect()
 			i+=1
 			buf+=1
-		q.put(tempimg)
+        q.put(tempimg)
         
 def putFrames():
     global exitFlag
