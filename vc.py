@@ -60,23 +60,24 @@ def getFrames():
     command = "/usr/bin/avconv -f video4linux2 -r 15 -input_format yuyv422 -video_size 640x480 -i /dev/video0 -f rawvideo -pix_fmt rgb24 pipe: "
     inputPipeline = sp.Popen(shlex.split(command), stdout = sp.PIPE,stderr=DEVNULL)
     while not exitFlag:
-        if i % 100 == 0:
-            print( "Starting processing frame %d" %i)
-        try:
-            raw_image = inputPipeline.stdout.read(nbytes)
-        except IOError as err:
-                ffmpeg_error = inputPipeline.stderr.read()
-                print (ffmpeg_error) 
-        except: # catch *all* exceptions
-            e = sys.exc_info()[0]
-            print("Error: %s" % e )
-        if len(raw_image) != nbytes:
-            print("Warning, not reading right # byes, %d, %d" % ( len(raw_image), nbytes) )
-        if i % 100 == 0:
-            print("Manipulating frame %d" %i)
         buf=0
         tempimg = ""
         while buf<10:
+            if i % 100 == 0:
+                print( "Starting processing frame %d" %i)
+            try:
+                raw_image = inputPipeline.stdout.read(nbytes)
+            except IOError as err:
+                    ffmpeg_error = inputPipeline.stderr.read()
+                    print (ffmpeg_error) 
+            except: # catch *all* exceptions
+                e = sys.exc_info()[0]
+                print("Error: %s" % e )
+            if len(raw_image) != nbytes:
+                print("Warning, not reading right # byes, %d, %d" % ( len(raw_image), nbytes) )
+            if i % 100 == 0:
+            print("Manipulating frame %d" %i)
+        
             img = Image.frombuffer('RGB', (640,480), raw_image, 'raw', 'RGB', 0, 1)
             draw=ImageDraw.Draw(img)
             draw.text((0, 460), temp ,(255,255,0),font=font)
