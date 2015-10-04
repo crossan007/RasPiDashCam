@@ -87,7 +87,8 @@ def getFrames():
         del raw_image
         gc.collect()
         i+=1
-	inputPipeline.kill()
+    
+    inputPipeline.kill()
         
         
 def putFrames():
@@ -133,11 +134,12 @@ thread3 = threading.Thread(target=updateVars)
 thread3.daemon = True
 thread3.start()
 z=0
-while z < 20:
-    time.sleep(1)
+cmd =0 
+while not cmd:
     print("vc.py still alive ")
     print("queue size: %d" % q.qsize())
-    z+=1
+    cmd = raw_input("Enter a number  :")
+    
 exitFlag=1
 
 #outputPipeline.kill()
