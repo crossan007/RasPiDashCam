@@ -74,7 +74,7 @@ def getFrames():
             print("Warning, not reading right # byes, %d, %d" % ( len(raw_image), nbytes) )
         if i % 100 == 0:
             print("Manipulating frame %d" %i)
-		buf=0
+        buf=0
         tempimg = ""
 		while buf<10:
 			img = Image.frombuffer('RGB', (640,480), raw_image, 'raw', 'RGB', 0, 1)
