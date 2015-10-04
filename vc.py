@@ -98,8 +98,7 @@ def putFrames():
     file=gzip.open("vid-"+date+".gz", "wb")
     while not exitFlag:
         img=q.get()
-        if i % 10 == 0:
-            print( "Starting push frame %d" %i)
+        print( "Starting push frame %d" %i)
         try:
             #outputPipeline.stdin.write(img)
             f.write(img)
