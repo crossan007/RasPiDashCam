@@ -76,7 +76,7 @@ def getFrames():
             if len(raw_image) != nbytes:
                 print("Warning, not reading right # byes, %d, %d" % ( len(raw_image), nbytes) )
             if i % 100 == 0:
-            print("Manipulating frame %d" %i)
+                print("Manipulating frame %d" %i)
         
             img = Image.frombuffer('RGB', (640,480), raw_image, 'raw', 'RGB', 0, 1)
             draw=ImageDraw.Draw(img)
