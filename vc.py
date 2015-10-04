@@ -76,20 +76,20 @@ def getFrames():
             print("Manipulating frame %d" %i)
         buf=0
         tempimg = ""
-		while buf<10:
-			img = Image.frombuffer('RGB', (640,480), raw_image, 'raw', 'RGB', 0, 1)
-			draw=ImageDraw.Draw(img)
-			draw.text((0, 460), temp ,(255,255,0),font=font)
-			draw.text((160, 460), date ,(255,255,0),font=font)
-			draw.text((580, 460), str(i) ,(255,255,0),font=font)
-			draw = ImageDraw.Draw(img)
+        while buf<10:
+            img = Image.frombuffer('RGB', (640,480), raw_image, 'raw', 'RGB', 0, 1)
+            draw=ImageDraw.Draw(img)
+            draw.text((0, 460), temp ,(255,255,0),font=font)
+            draw.text((160, 460), date ,(255,255,0),font=font)
+            draw.text((580, 460), str(i) ,(255,255,0),font=font)
+            draw = ImageDraw.Draw(img)
             tempimg+=img.tostring()
-			del img
-			del draw
-			del raw_image
-			gc.collect()
-			i+=1
-			buf+=1
+            del img
+            del draw
+            del raw_image
+            gc.collect()
+            i+=1
+            buf+=1
         q.put(tempimg)
         
 def putFrames():
