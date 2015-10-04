@@ -9,7 +9,6 @@
 # http://stackoverflow.com/questions/14759637/python-pil-bytes-to-image
 # http://zulko.github.io/blog/2013/09/27/read-and-write-video-frames-in-python-using-ffmpeg/
 
-
 import subprocess as sp
 import numpy
 import os 
@@ -31,9 +30,7 @@ import gzip
 date = " "
 temp = " "
 exitFlag = 0
-
 q = Queue.Queue()
-
 
 def updateVars():
     global date
@@ -90,7 +87,7 @@ def getFrames():
         del raw_image
         gc.collect()
         i+=1
-	inputPipeline.kill()
+	
         
         
 def putFrames():
@@ -124,39 +121,24 @@ try:
     from subprocess import DEVNULL  # py3k
 except ImportError:
     DEVNULL = open(os.devnull, 'wb')
-
 os.system("pkill avconv");
-
-
 ts = time.time()
 date = datetime.datetime.fromtimestamp(ts).strftime('%Y%m%d-%H%M%S')
-
-
-#
-
-
-
 thread = threading.Thread(target=getFrames)
 thread.daemon = True
 thread.start()
-
 thread2 = threading.Thread(target=putFrames)
 thread2.daemon = True
 thread2.start()
-
 thread3 = threading.Thread(target=updateVars)
 thread3.daemon = True
 thread3.start()
-
 z=0
-
 while z < 20:
     time.sleep(1)
     print("vc.py still alive ")
     print("queue size: %d" % q.qsize())
     z+=1
-    
-    
-
-
+exitFlag=1
+inputPipeline.kill()
 #outputPipeline.kill()
