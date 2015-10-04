@@ -26,6 +26,7 @@ from PIL import ImageFont
 import threading
 import Queue
 import syslog
+import gzip
 
 date = " "
 temp = " "
@@ -62,59 +63,60 @@ def getFrames():
     while not exitFlag:
         buf=0
         tempimg = ""
-        while buf<10:
-            if i % 100 == 0:
-                print( "Starting processing frame %d" %i)
-            try:
-                raw_image = inputPipeline.stdout.read(nbytes)
-            except IOError as err:
-                    ffmpeg_error = inputPipeline.stderr.read()
-                    print (ffmpeg_error) 
-            except: # catch *all* exceptions
-                e = sys.exc_info()[0]
-                print("Error: %s" % e )
-            if len(raw_image) != nbytes:
-                print("Warning, not reading right # byes, %d, %d" % ( len(raw_image), nbytes) )
-            if i % 100 == 0:
-                print("Manipulating frame %d" %i)
+        if i % 100 == 0:
+            print( "Starting processing frame %d" %i)
+        try:
+            raw_image = inputPipeline.stdout.read(nbytes)
+        except IOError as err:
+                ffmpeg_error = inputPipeline.stderr.read()
+                print (ffmpeg_error) 
+        except: # catch *all* exceptions
+            e = sys.exc_info()[0]
+            print("Error: %s" % e )
+        if len(raw_image) != nbytes:
+            print("Warning, not reading right # byes, %d, %d" % ( len(raw_image), nbytes) )
+        if i % 100 == 0:
+            print("Manipulating frame %d" %i)
+    
+        img = Image.frombuffer('RGB', (640,480), raw_image, 'raw', 'RGB', 0, 1)
+        draw=ImageDraw.Draw(img)
+        draw.text((0, 460), temp ,(255,255,0),font=font)
+        draw.text((160, 460), date ,(255,255,0),font=font)
+        draw.text((580, 460), str(i) ,(255,255,0),font=font)
+        draw = ImageDraw.Draw(img)
+        q.put(img.tostring())
+        del img
+        del draw
+        del raw_image
+        gc.collect()
+        i+=1
         
-            img = Image.frombuffer('RGB', (640,480), raw_image, 'raw', 'RGB', 0, 1)
-            draw=ImageDraw.Draw(img)
-            draw.text((0, 460), temp ,(255,255,0),font=font)
-            draw.text((160, 460), date ,(255,255,0),font=font)
-            draw.text((580, 460), str(i) ,(255,255,0),font=font)
-            draw = ImageDraw.Draw(img)
-            tempimg+=img.tostring()
-            del img
-            del draw
-            del raw_image
-            gc.collect()
-            i+=1
-            buf+=1
-        q.put(tempimg)
         
 def putFrames():
     global exitFlag
     i=0
-    command2 = "/usr/bin/avconv -f rawvideo -pix_fmt rgb24 -video_size 640x480 -r 15 -i pipe: -vf \"setpts=0.1*PTS\" -c:v libx264 -preset ultrafast -tune film -map 0 -f flv -f segment -segment_time 90 -r 90 \"vid-"+date+"-%03d.flv\""
-    outputPipeline = sp.Popen(shlex.split(command2), stdout = DEVNULL, stderr = DEVNULL, stdin = sp.PIPE )
+    #command2 = "/usr/bin/avconv -f rawvideo -pix_fmt rgb24 -video_size 640x480 -r 15 -i pipe: -vf \"setpts=0.1*PTS\" -c:v libx264 -preset ultrafast -tune film -map 0 -f flv -f segment -segment_time 90 -r 90 \"vid-"+date+"-%03d.flv\""
+    #outputPipeline = sp.Popen(shlex.split(command2), stdout = DEVNULL, stderr = DEVNULL, stdin = sp.PIPE )
+    file=gzip.open("vid-"+date+".gz", "wb")
     while not exitFlag:
         img=q.get()
         if i % 10 == 0:
             print( "Starting push frame %d" %i)
         try:
-            outputPipeline.stdin.write(img)
-        except IOError as err:
-            ffmpeg_error = outputPipeline.stderr.read()
-            print(ffmpeg_error)
+            #outputPipeline.stdin.write(img)
+            f.write(img)
+        #except IOError as err:
+            #ffmpeg_error = outputPipeline.stderr.read()
+            #print(ffmpeg_error)
         except: # catch *all* exceptions
             e = sys.exc_info()[0]
             print("Error: %s" % e )
-            ffmpeg_error = outputPipeline.stdout.read()
-            print(ffmpeg_error)
+            #ffmpeg_error = outputPipeline.stdout.read()
+            #print(ffmpeg_error)
         if i % 10 == 0:
             print( "Done with frame %d" %i)
         i+=1
+    f.close()
     
     
 try:
@@ -145,11 +147,17 @@ thread3 = threading.Thread(target=updateVars)
 thread3.daemon = True
 thread3.start()
 
-while True:
+while exitFlag=0:
     time.sleep(10)
     print("vc.py still alive ")
     print("queue size: %d" % q.qsize())
+    gap = input("")
+    if gap == ("q"):
+        print("")
+        exitFlag=1
+    else:
+        print("")
     
-exitFlag=1
+
 inputPipeline.kill()
 outputPipeline.kill()
