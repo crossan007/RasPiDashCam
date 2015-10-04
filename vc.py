@@ -87,7 +87,7 @@ def getFrames():
         del raw_image
         gc.collect()
         i+=1
-	
+	inputPipeline.kill()
         
         
 def putFrames():
@@ -95,7 +95,7 @@ def putFrames():
     i=0
     #command2 = "/usr/bin/avconv -f rawvideo -pix_fmt rgb24 -video_size 640x480 -r 15 -i pipe: -vf \"setpts=0.1*PTS\" -c:v libx264 -preset ultrafast -tune film -map 0 -f flv -f segment -segment_time 90 -r 90 \"vid-"+date+"-%03d.flv\""
     #outputPipeline = sp.Popen(shlex.split(command2), stdout = DEVNULL, stderr = DEVNULL, stdin = sp.PIPE )
-    file=gzip.open("vid-"+date+".gz", "wb")
+    file=gzip.open("vid-"+date+".gz", "wb",compresslevel=3)
     while not exitFlag:
         img=q.get()
         print( "Starting push frame %d" %i)
@@ -139,5 +139,5 @@ while z < 20:
     print("queue size: %d" % q.qsize())
     z+=1
 exitFlag=1
-inputPipeline.kill()
+
 #outputPipeline.kill()
