@@ -95,7 +95,9 @@ def putFrames():
     global exitFlag
     i=0
     # for H264: command2 = "/usr/bin/avconv -f rawvideo -pix_fmt rgb24 -video_size 640x480 -r 15 -i pipe: -vf \"setpts=0.1*PTS\" -c:v libx264 -preset ultrafast -tune film -map 0 -f flv -f segment -segment_time 90 -r 90 \"vid-"+date+"-%03d.flv\""
-    command2 = "/usr/bin/avconv -f rawvideo -pix_fmt rgb24 -video_size 640x480 -r 15 -i pipe: -c:v mpeg2video -map 0 -f mp4 -f segment -segment_time 90 \"vid-"+date+"-%03d.mp4\""
+    command2 = "/usr/bin/avconv -f rawvideo -pix_fmt rgb24 -video_size 640x480 -r 15 -i pipe: -c:v mpeg4 -map 0 -f flv -f segment -segment_time 90 \"vid-"+date+"-%03d.flv\""
+    
+    
     outputPipeline = sp.Popen(shlex.split(command2), stdout = sp.PIPE, stderr = sp.PIPE, stdin = sp.PIPE )
     while not exitFlag:
         img=q.get()
@@ -134,10 +136,11 @@ thread3.daemon = True
 thread3.start()
 z=0
 cmd =0 
-while not cmd:
+while exitFlag=0:
+    time.sleep(10)
     print("vc.py still alive ")
     print("queue size: %d" % q.qsize())
-    cmd = raw_input("Enter a number  :")
+   
     
 exitFlag=1
 
