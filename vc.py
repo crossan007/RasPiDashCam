@@ -96,7 +96,7 @@ def putFrames():
     i=0
     # for H264: command2 = "/usr/bin/avconv -f rawvideo -pix_fmt rgb24 -video_size 640x480 -r 15 -i pipe: -vf \"setpts=0.1*PTS\" -c:v libx264 -preset ultrafast -tune film -map 0 -f flv -f segment -segment_time 90 -r 90 \"vid-"+date+"-%03d.flv\""
     command2 = "/usr/bin/avconv -f rawvideo -pix_fmt rgb24 -video_size 640x480 -r 15 -i pipe: -vf \"setpts=0.1*PTS\" -c:v mpeg2video -map 0 -f mp4 -f segment -segment_time 90 -r 90 \"vid-"+date+"-%03d.mp4\""
-    outputPipeline = sp.Popen(shlex.split(command2), stdout = DEVNULL, stderr = DEVNULL, stdin = sp.PIPE )
+    outputPipeline = sp.Popen(shlex.split(command2), stdout = sp.PIPE, stderr = sp.PIPE, stdin = sp.PIPE )
     while not exitFlag:
         img=q.get()
         if i % 10 == 0:
