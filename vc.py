@@ -136,7 +136,7 @@ thread3.daemon = True
 thread3.start()
 z=0
 cmd =0 
-while exitFlag=0:
+while True:
     time.sleep(10)
     print("vc.py still alive ")
     print("queue size: %d" % q.qsize())
